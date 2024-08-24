@@ -13,6 +13,18 @@
             width: 100%;
             box-sizing: border-box;
         }
+        #result {
+            margin-top: 20px;
+            white-space: pre-wrap; /* Preserve whitespace and line breaks */
+            border: 1px solid #ddd;
+            padding: 10px;
+            background-color: #f9f9f9;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        button {
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
@@ -31,7 +43,10 @@
         <label for="tail">Đánh số ở cuối từng dòng</label><br><br>
 
         <button type="button" onclick="processText()">Xử lý và tải về</button>
+        <button type="button" onclick="copyToClipboard()">Sao chép kết quả</button>
     </form>
+
+    <div id="result"></div>
 
     <script>
         function processText() {
@@ -59,14 +74,24 @@
                 }
             }
 
-            // Tạo file để tải về
-            const blob = new Blob([result], { type: 'text/plain;charset=utf-8' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'out.txt';
-            a.click();
-            URL.revokeObjectURL(url);
+            // Hiển thị kết quả lên trang
+            const resultDiv = document.getElementById('result');
+            resultDiv.textContent = result;
+        }
+
+        function copyToClipboard() {
+            const resultDiv = document.getElementById('result');
+            if (resultDiv.textContent) {
+                navigator.clipboard.writeText(resultDiv.textContent)
+                    .then(() => {
+                        alert('Đã sao chép kết quả vào clipboard.');
+                    })
+                    .catch(err => {
+                        alert('Lỗi khi sao chép: ' + err);
+                    });
+            } else {
+                alert('Không có dữ liệu để sao chép.');
+            }
         }
     </script>
 </body>
