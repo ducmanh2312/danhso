@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text Processor</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        textarea {
+            width: 100%;
+            box-sizing: border-box;
+        }
+    </style>
+</head>
+<body>
+    <h1>Text Processor</h1>
+    <form id="text-form">
+        <label for="text">Nhập danh sách:</label><br>
+        <textarea id="text" name="text" rows="10" required></textarea><br><br>
+
+        <label for="start_number">Số bắt đầu đánh:</label>
+        <input type="number" id="start_number" name="start_number" value="1" required><br><br>
+
+        <label>Chọn cách đánh số:</label><br>
+        <input type="radio" id="head" name="choice" value="1" checked>
+        <label for="head">Đánh số ở đầu từng dòng</label><br>
+        <input type="radio" id="tail" name="choice" value="2">
+        <label for="tail">Đánh số ở cuối từng dòng</label><br><br>
+
+        <button type="button" onclick="processText()">Xử lý và tải về</button>
+    </form>
+
+    <script>
+        function processText() {
+            // Lấy dữ liệu từ form
+            const text = document.getElementById('text').value;
+            const startNumber = parseInt(document.getElementById('start_number').value);
+            const choice = document.querySelector('input[name="choice"]:checked').value;
+
+            if (!text) {
+                alert("Vui lòng nhập danh sách.");
+                return;
+            }
+
+            // Xử lý văn bản
+            const lines = text.split('\n');
+            const processedLines = lines.map(line => line.replace(/\.\.\./g, "'"));
+            let result = '';
+
+            for (let i = 0; i < processedLines.length; i++) {
+                const number = i + startNumber;
+                if (choice === '1') {
+                    result += `${number}. ${processedLines[i]}\n`;
+                } else if (choice === '2') {
+                    result += `${processedLines[i].trim()} .${number}\n`;
+                }
+            }
+
+            // Tạo file để tải về
+            const blob = new Blob([result], { type: 'text/plain;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'out.txt';
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+    </script>
+</body>
+</html>
