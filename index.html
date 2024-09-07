@@ -70,7 +70,7 @@
                 if (choice === '1') {
                     result += `${number}. ${processedLines[i]}\n`;
                 } else if (choice === '2') {
-                    result += `${processedLines[i].trim()} .${number}\n`;
+                    result += `${processedLines[i].trim()} .${String(number).padStart(2, '0')}\n`;
                 }
             }
 
