@@ -1,54 +1,146 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Text Processor</title>
+    <title>Text Processor Nâng Cấp</title>
+    <!-- Tải Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
+        /* Sử dụng font Inter cho giao diện */
         body {
-            font-family: Arial, sans-serif;
-            padding: 20px;
+            font-family: 'Inter', sans-serif;
         }
-        textarea {
-            width: 100%;
-            box-sizing: border-box;
-        }
+        /* Tùy chỉnh thanh cuộn cho Firefox */
         #result {
-            margin-top: 20px;
-            white-space: pre-wrap; /* Preserve whitespace and line breaks */
-            border: 1px solid #ddd;
-            padding: 10px;
-            background-color: #f9f9f9;
-            max-height: 200px;
-            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: #9ca3af #f3f4f6;
         }
-        button {
-            margin-top: 10px;
+        /* Tùy chỉnh thanh cuộn cho Chrome, Safari, Edge */
+        #result::-webkit-scrollbar {
+            width: 8px;
+        }
+        #result::-webkit-scrollbar-track {
+            background: #f3f4f6;
+            border-radius: 4px;
+        }
+        #result::-webkit-scrollbar-thumb {
+            background-color: #9ca3af;
+            border-radius: 4px;
+            border: 2px solid #f3f4f6;
         }
     </style>
+    <!-- Tải font Inter từ Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
-<body>
-    <h1>Text Processor :(((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((</h1>
-    <form id="text-form">
-        <label for="text">Nhập danh sách:</label><br>
-        <textarea id="text" name="text" rows="10" required></textarea><br><br>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen p-4">
 
-        <label for="start_number">Số bắt đầu đánh:</label>
-        <input type="number" id="start_number" name="start_number" value="1" required><br><br>
+    <!-- Card chính -->
+    <div class="bg-white p-6 sm:p-8 rounded-xl shadow-xl w-full max-w-2xl">
+        
+        <!-- Tiêu đề -->
+        <h1 class="text-3xl font-bold text-center mb-6 text-gray-800">
+            Text Processor
+        </h1>
 
-        <label>Chọn cách đánh số:</label><br>
-        <input type="radio" id="head" name="choice" value="1" checked>
-        <label for="head">Đánh số ở đầu từng dòng</label><br>
-        <input type="radio" id="tail" name="choice" value="2">
-        <label for="tail">Đánh số ở cuối từng dòng</label><br><br>
+        <!-- Form nhập liệu -->
+        <form id="text-form" class="space-y-6">
+            
+            <!-- Vùng nhập văn bản -->
+            <div>
+                <label for="text" class="block text-sm font-medium text-gray-700 mb-2">Nhập danh sách:</label>
+                <textarea id="text" name="text" rows="10" required class="w-full p-3 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 resize-y" placeholder="Nhập văn bản của bạn ở đây..."></textarea>
+            </div>
 
-        <button type="button" onclick="processText()">Xử lý và tải về</button>
-        <button type="button" onclick="copyToClipboard()">Sao chép kết quả</button>
-    </form>
+            <!-- Cài đặt -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Số bắt đầu -->
+                <div>
+                    <label for="start_number" class="block text-sm font-medium text-gray-700 mb-2">Số bắt đầu:</label>
+                    <input type="number" id="start_number" name="start_number" value="1" required class="w-full p-3 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200">
+                </div>
 
-    <div id="result"></div>
+                <!-- Lựa chọn cách đánh số -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Chọn cách đánh số:</label>
+                    <div class="space-y-2">
+                        <div class="flex items-center">
+                            <input type="radio" id="head" name="choice" value="1" class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500" checked>
+                            <label for="head" class="ml-3 block text-sm text-gray-700">Đánh số ở đầu dòng</label>
+                        </div>
+                        <div class="flex items-center">
+                            <input type="radio" id="tail" name="choice" value="2" class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500">
+                            <label for="tail" class="ml-3 block text-sm text-gray-700">Đánh số ở cuối dòng</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Các nút hành động -->
+            <div class="flex flex-col sm:flex-row gap-4">
+                <button type="button" onclick="processTextAndDownload()" class="w-full sm:w-1/2 bg-blue-600 text-white py-3 px-4 rounded-md font-semibold hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-200 shadow-md">
+                    Xử lý và Tải về
+                </button>
+                <button type="button" onclick="copyToClipboard()" class="w-full sm:w-1/2 bg-green-600 text-white py-3 px-4 rounded-md font-semibold hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition duration-200 shadow-md">
+                    Sao chép kết quả
+                </button>
+            </div>
+        </form>
+
+        <!-- Vùng kết quả -->
+        <div class="mt-6">
+            <label for="result" class="block text-sm font-medium text-gray-700 mb-2">Kết quả:</label>
+            <div id="result" class="w-full p-4 bg-gray-50 border border-gray-200 rounded-md min-h-[150px] max-h-[300px] overflow-y-auto whitespace-pre-wrap font-mono text-sm text-gray-800"></div>
+        </div>
+    </div>
+
+    <!-- Thông báo "Toast" (thay thế cho alert) -->
+    <div id="toast" class="fixed bottom-4 right-4 bg-gray-900 text-white py-2 px-5 rounded-lg shadow-xl transition-all duration-300 ease-in-out opacity-0 transform translate-y-4">
+        Đã sao chép!
+    </div>
 
     <script>
+        // Lấy phần tử toast
+        const toast = document.getElementById('toast');
+        let toastTimer;
+
+        /**
+         * Hiển thị thông báo toast
+         * @param {string} message - Nội dung thông báo
+         * @param {string} [type='success'] - Loại thông báo ('success' hoặc 'error')
+         */
+        function showToast(message, type = 'success') {
+            // Xóa bộ đếm thời gian cũ nếu có
+            clearTimeout(toastTimer);
+
+            toast.textContent = message;
+            
+            // Đặt màu dựa trên loại
+            if (type === 'error') {
+                toast.classList.remove('bg-gray-900');
+                toast.classList.add('bg-red-600');
+            } else {
+                toast.classList.remove('bg-red-600');
+                toast.classList.add('bg-gray-900');
+            }
+
+            // Hiển thị toast
+            toast.classList.remove('opacity-0', 'translate-y-4');
+            toast.classList.add('opacity-100', 'translate-y-0');
+
+            // Ẩn toast sau 3 giây
+            toastTimer = setTimeout(() => {
+                toast.classList.remove('opacity-100', 'translate-y-0');
+                toast.classList.add('opacity-0', 'translate-y-4');
+            }, 3000);
+        }
+
+        /**
+         * Xử lý văn bản và trả về kết quả
+         * @returns {string|null} - Chuỗi kết quả hoặc null nếu có lỗi
+         */
         function processText() {
             // Lấy dữ liệu từ form
             const text = document.getElementById('text').value;
@@ -56,42 +148,95 @@
             const choice = document.querySelector('input[name="choice"]:checked').value;
 
             if (!text) {
-                alert("Vui lòng nhập danh sách.");
-                return;
+                showToast("Vui lòng nhập danh sách.", 'error');
+                return null;
             }
 
             // Xử lý văn bản
             const lines = text.split('\n');
-            const processedLines = lines.map(line => line.replace(/\.\.\./g, "'"));
+            // Lọc ra các dòng không rỗng
+            const nonEmptyLines = lines.filter(line => line.trim() !== ''); 
+            
+            const processedLines = nonEmptyLines.map(line => line.replace(/\.\.\./g, "'"));
             let result = '';
+            let currentNumber = startNumber;
 
             for (let i = 0; i < processedLines.length; i++) {
-                const number = String(i + startNumber).padStart(2, '0');
+                const number = String(currentNumber).padStart(2, '0');
                 if (choice === '1') {
+                    // Đánh số ở đầu
                     result += `${number}. ${processedLines[i]}\n`;
                 } else if (choice === '2') {
-                    result += `${processedLines[i].trim()} .${String(number).padStart(2, '0')}\n`;
+                    // Đánh số ở cuối
+                    result += `${processedLines[i].trim()} .${number}\n`;
                 }
+                currentNumber++;
             }
+            
+            return result;
+        }
+
+        /**
+         * Xử lý văn bản, hiển thị và kích hoạt tải về
+         */
+        function processTextAndDownload() {
+            const result = processText();
+            
+            if (result === null) return; // Dừng nếu không có văn bản
 
             // Hiển thị kết quả lên trang
             const resultDiv = document.getElementById('result');
             resultDiv.textContent = result;
+
+            // Tạo và tải tệp tin
+            const blob = new Blob([result], { type: 'text/plain;charset=utf-8' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = 'ket_qua_xu_ly.txt'; // Tên tệp tải về
+            
+            // Thêm vào body, click và xóa đi
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(link.href); // Giải phóng bộ nhớ
         }
 
+        /**
+         * Sao chép kết quả vào clipboard
+         */
         function copyToClipboard() {
             const resultDiv = document.getElementById('result');
-            if (resultDiv.textContent) {
-                navigator.clipboard.writeText(resultDiv.textContent)
-                    .then(() => {
-                        alert('Đã sao chép kết quả vào clipboard.');
-                    })
-                    .catch(err => {
-                        alert('Lỗi khi sao chép: ' + err);
-                    });
-            } else {
-                alert('Không có dữ liệu để sao chép.');
+            const textToCopy = resultDiv.textContent;
+
+            if (!textToCopy) {
+                showToast('Không có dữ liệu để sao chép.', 'error');
+                return;
             }
+
+            // Tạo một textarea tạm thời để sao chép
+            const textarea = document.createElement('textarea');
+            textarea.value = textToCopy;
+            textarea.style.position = 'fixed'; // Ẩn khỏi màn hình
+            textarea.style.opacity = '0';
+            document.body.appendChild(textarea);
+            
+            textarea.select();
+            textarea.setSelectionRange(0, 99999); // Dành cho thiết bị di động
+
+            try {
+                // Sử dụng document.execCommand để tương thích rộng rãi
+                const successful = document.execCommand('copy');
+                if (successful) {
+                    showToast('Đã sao chép kết quả vào clipboard.');
+                } else {
+                    showToast('Sao chép thất bại.', 'error');
+                }
+            } catch (err) {
+                showToast('Lỗi khi sao chép: ' + err, 'error');
+            }
+
+            // Xóa textarea tạm thời
+            document.body.removeChild(textarea);
         }
     </script>
 </body>
