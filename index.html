@@ -80,11 +80,8 @@
 
             <!-- Các nút hành động -->
             <div class="flex flex-col sm:flex-row gap-4">
-                <button type="button" onclick="processTextAndDownload()" class="w-full sm:w-1/2 bg-blue-600 text-white py-3 px-4 rounded-md font-semibold hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-200 shadow-md">
-                    Xử lý và Tải về
-                </button>
-                <button type="button" onclick="copyToClipboard()" class="w-full sm:w-1/2 bg-green-600 text-white py-3 px-4 rounded-md font-semibold hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition duration-200 shadow-md">
-                    Sao chép kết quả
+                <button type="button" onclick="processTextAndCopy()" class="w-full bg-green-600 text-white py-3 px-4 rounded-md font-semibold hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition duration-200 shadow-md">
+                    Xử lý và Sao chép
                 </button>
             </div>
         </form>
@@ -177,36 +174,20 @@
         }
 
         /**
-         * Xử lý văn bản, hiển thị và kích hoạt tải về
+         * Xử lý văn bản, hiển thị kết quả và sao chép vào clipboard
          */
-        function processTextAndDownload() {
+        function processTextAndCopy() {
+            // 1. Xử lý văn bản và hiển thị
             const result = processText();
             
-            if (result === null) return; // Dừng nếu không có văn bản
+            if (result === null) return; // Dừng nếu không có văn bản (processText đã show toast)
 
             // Hiển thị kết quả lên trang
             const resultDiv = document.getElementById('result');
             resultDiv.textContent = result;
-
-            // Tạo và tải tệp tin
-            const blob = new Blob([result], { type: 'text/plain;charset=utf-8' });
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(blob);
-            link.download = 'ket_qua_xu_ly.txt'; // Tên tệp tải về
             
-            // Thêm vào body, click và xóa đi
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            URL.revokeObjectURL(link.href); // Giải phóng bộ nhớ
-        }
-
-        /**
-         * Sao chép kết quả vào clipboard
-         */
-        function copyToClipboard() {
-            const resultDiv = document.getElementById('result');
-            const textToCopy = resultDiv.textContent;
+            // 2. Sao chép kết quả
+            const textToCopy = resultDiv.textContent; // Lấy text từ div
 
             if (!textToCopy) {
                 showToast('Không có dữ liệu để sao chép.', 'error');
